@@ -6,7 +6,7 @@
 
 In this project we used an existing dataset from Yahoo Music's streaming platform in which there are over 717 million ratings of 136 thousand songs from 1.8 million users of the service.
 
-![](RackMultipart20221222-1-evj1sr_html_5f479414ce659fce.png)
+![Screenshot](images/image1.png)
 
 The features included are the anonymized user ids, song ids, album ids, and leveled genre information. The genre id is the primary genre associated with the song and parent genre is a broader genre that encompasses the primary one. If a parent genre exists, the level of the song changes from 1 to 2 given the hierarchy of genres. Additionally, some songs are of level 3 where the primary genre is the child of a genre that also has a parent genre. The hierarchy of these genres can be seen here:
 
