@@ -6,33 +6,33 @@
 
 In this project we used an existing dataset from Yahoo Music's streaming platform in which there are over 717 million ratings of 136 thousand songs from 1.8 million users of the service.
 
-![Screenshot](images/image1.png)
+![Screenshot](images/image6.png)
 
 The features included are the anonymized user ids, song ids, album ids, and leveled genre information. The genre id is the primary genre associated with the song and parent genre is a broader genre that encompasses the primary one. If a parent genre exists, the level of the song changes from 1 to 2 given the hierarchy of genres. Additionally, some songs are of level 3 where the primary genre is the child of a genre that also has a parent genre. The hierarchy of these genres can be seen here:
 
-![](RackMultipart20221222-1-evj1sr_html_e33cd9854b47feeb.png)
+![Screenshot](images/image7.png)
 
 **Summary Statistics:**
 
-![](RackMultipart20221222-1-evj1sr_html_b7a74b59314163d7.png)
+![Screenshot](images/image9.png)
 
 Given that the average rating is a bit higher than 3, maybe there are more highly rated songs in this data giving it a slight skew. The genre columns seem to have a max of around 215 meaning there are over 200 genres to choose from however the average genre number seems to be closer to 16. The standard deviation is also very high indicating there is a large variance in the genre selection of the songs rated. The level column has a max of 3 indicating that there are 3 different levels assigned to every song but the first 3 quartiles fall into the 1 bucket, indicating that the majority of songs are in the first level.
 
 **EDA:**
 
-![](RackMultipart20221222-1-evj1sr_html_af458939183b2e82.png)
+![Screenshot](images/image16.png)
 
 The distribution of ratings given by users in this dataset are fairly varied with similar counts in the 2-4 range and peaks at 1 and 4, showing that users tend to rate songs either very poorly or highly. This indicates that a good default metric for our model if that user has not rated a song yet, would be to give either a 1 or 5 depending on whether that user tends to rate more songs poorly or highly.
 
-![](RackMultipart20221222-1-evj1sr_html_5980c1919c0b7cd3.png)
+![Screenshot](images/image14.png)
 
 The distribution of level is a tri modal distribution with a comparatively higher peak at level 1. This shows that most songs are attached to a single genre (probably niche) and there are only a few songs with parent genres in the level 2 and 3 hierarchies. This indicates that the feature to use in our model should be genre\_id instead of parent\_genre if many songs don't have a parent genre
 
-![](RackMultipart20221222-1-evj1sr_html_b5f46f249d839a3a.png) ![](RackMultipart20221222-1-evj1sr_html_7e51aafbc6583789.png)
+![Screenshot](images/image8.png) ![Screenshot](images/image17.png)
 
 There are no significant correlations between the user ratings and genre information or the hierarchy levels. Therefore, the model will have to rely on historical data per user or similarity functions between users and songs to accurately predict ratings.
 
-![](RackMultipart20221222-1-evj1sr_html_ff114347c5aa0ff5.png) ![](RackMultipart20221222-1-evj1sr_html_9b633a59841bb0c0.png)
+![Screenshot](images/image21.png) ![Screenshot](images/image3.png)
 
 After some analysis on ratings across different genres, the data shows that the bigger genres like Pop and Rock which have a higher number of overall ratings, are also ranked with the most number of 5 and 1 ratings as well. This shows that because of the distribution of ratings across genres being unequal, knowing the genre does not indicate whether it will be more likely to get ranked higher or not. This also further affirms the close to 0 correlation coefficient between genre and rating.
 
@@ -44,13 +44,13 @@ When choosing a baseline for our model, we considered the following approaches:
 
 One method, an unsupervised learning model, is a similarity based approach that allows us to use our items and users to learn what a user likes based on their previous ratings and the previous ratings of similar users. Using this framework we could create a model based on the following:
 
-![](RackMultipart20221222-1-evj1sr_html_80622a56060c224a.png)
+![Screenshot](images/image13.png)
 
 We can also make use of the ratings we do have in the dataset, by taking a supervised learning approach.
 
 An example of this is the latent factor model:
 
-![](RackMultipart20221222-1-evj1sr_html_c2b298ae48f89267.png)
+![Screenshot](images/image1.png)
 
 This model allows us to use the user and songs latent factors to come up with personalized modifiers to add to the optimized typical rating of the song. These personalized modifiers are defined as Beta(u), the amount this user tends to rank above the mean, and Beta(s), the amount this song tends to rank compared to other songs.
 
@@ -66,11 +66,11 @@ In this project we attempt to tackle another supervised learning approach, makin
 
 The tensorflow recommender system framework uses what they call a two tower model, utilizing a neural network containing two models that learn representations separately for songs and users:
 
-![](RackMultipart20221222-1-evj1sr_html_fc13f6a2780f0a98.png)
+![Screenshot](images/image22.png)
 
 This system utilizes a "deep cross neural network", that takes an input layer, a cross network(that models explicit feature interactions) and a deep network(that models implicit feature interactions)
 
-![](RackMultipart20221222-1-evj1sr_html_ecb02a94ac21fa07.png)
+![Screenshot](images/image11.png)
 
 By learning from both explicit and implicit feature interactions, this choice of model attempts to solve the _cold start_ problem, which dictates that feature based models are not as useful when we have large amounts of data on a user/song, but are useful for unseen users and songs.
 
@@ -78,7 +78,7 @@ The song rating training set we are using has over 76 million entries. As a resu
 
 After converting our relevant data into tensors, we begin to create a vocabulary set for song\_ids and user\_ids, generating only the unique song and user ids in the training set:
 
-![](RackMultipart20221222-1-evj1sr_html_e18decfc7ee15d69.png)
+![Screenshot](images/image10.png)
 
 Our two tower model will consist of the following components:
 
@@ -88,13 +88,13 @@ Our two tower model will consist of the following components:
 
 This model can be implemented using the following code:
 
-![](RackMultipart20221222-1-evj1sr_html_4180fbb2048b0a44.png)
+![Screenshot](images/image18.png)
 
 These towers are constructed, first by using the keras preprocessing framework to turn our vocabulary into integer slices, and then mapping them to learned embedding vectors.
 
 After doing this process for both user and song id, we can set up the layers for our neural network:
 
-![](RackMultipart20221222-1-evj1sr_html_8c2897e709f4d521.png)
+![Screenshot](images/image15.png)
 
 Many approaches can be taken when choosing layers for our models. For this approach, we decided to use a simple model with only three dense layers using relu activation. While we could add more layers to learn more latent information, this often leads to overfitting of the data. Thus, we decided a simpler model would lead to better generalization.
 
@@ -110,7 +110,7 @@ Epochs: 6
 
 Learning Rate: 0.3
 
-![](RackMultipart20221222-1-evj1sr_html_e74aab1737912f14.png)
+![Screenshot](images/image5.png)
 
 **Section 4**
 
@@ -122,23 +122,23 @@ After parameter selection, we trained the model on our full training set of 76 m
 
 After training using these parameters, we achieved the following validation MSE
 
-![](RackMultipart20221222-1-evj1sr_html_cd1390a116267ae9.png)
+![Screenshot](images/image12.png)
 
 Using this model, we can generate predictions for a specific user, given a specific song using the following code:
 
-![](RackMultipart20221222-1-evj1sr_html_53eb5fc9063383a1.png)
+![Screenshot](images/image20.png)
 
 We see that our predictor is close to the actual rating of song 82446, user 0, returning a rating of 4.2, compared to an actual rating of 5.
 
 Let's compare our model with the results from the baseline latent factor model:
 
-![](RackMultipart20221222-1-evj1sr_html_1a4e941e9854065d.png)
+![Screenshot](images/image2.png)
 
 With a validation MSE of 1.75, we see that our deep learning model outperforms the basic latent factor model by approximately 0.53, indicating that a deep learning approach may be beneficial when building recommendation systems. Our results, however, may not be fully conclusive because of two major factors:
 
 1. For our baseline, we created a basic latent factor model. A more effective choice of latent factor model would be of the following form:
 
-![](RackMultipart20221222-1-evj1sr_html_cf3e8a297851b982.png)
+![Screenshot](images/image4.png)
 
 Where, Gamma(u) are the user's preferences and Gamma(i) are the song's attributes.
 
@@ -148,7 +148,7 @@ This is a much more robust choice of model when creating latent factor models, a
 
 With both models built, we can generate predictions and compare them to visualize the effectiveness of both approaches compared to the actual rating:
 
-![](RackMultipart20221222-1-evj1sr_html_a16bd18cbc9d1e4d.png)
+![Screenshot](images/image19.png)
 
 **References**
 
